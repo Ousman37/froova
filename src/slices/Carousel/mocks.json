@@ -1,0 +1,36 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"heading": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading2",
+						"content": {
+							"text": "Remarkable"
+						}
+					}
+				]
+			},
+			"flavor_cos": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Dolore non cupidatat aute aliquip duis commodo commodo mollit."
+						}
+					}
+				]
+			},
+			"choose_pricing_option": {
+				"__TYPE__": "FieldContent",
+				"value": "12 Cans - $35.99",
+				"type": "Select"
+			}
+		},
+		"items": []
+	}
+]

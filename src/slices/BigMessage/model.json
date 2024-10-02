@@ -1,0 +1,16 @@
+{
+  "id": "big_message",
+  "type": "SharedSlice",
+  "name": "BigMessage",
+  "description": "BigMessage",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": ""
+    }
+  ]
+}
