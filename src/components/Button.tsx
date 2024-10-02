@@ -12,7 +12,8 @@ export default function Button({ buttonLink, buttonText, className }: Props) {
   return (
     <PrismicNextLink
       className={clsx(
-        "rounded-md bg-purple-800 px-6 py-3 text-center text-lg font-bold uppercase tracking-wide text-white transition-colors duration-200 hover:bg-purple-700", className
+        "rounded-xl bg-orange-600 px-5 py-4 text-center text-xl font-bold uppercase tracking-wide text-white transition-colors duration-150 hover:bg-orange-700 md:text-2xl",
+        className,
       )}
       field={buttonLink}
     >

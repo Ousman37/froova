@@ -3,9 +3,11 @@
 import { asText, Content } from "@prismicio/client";
 import { PrismicNextImage } from "@prismicio/next";
 import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
-import { gsap } from "gsap";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { View } from "@react-three/drei";
+
 import { Bounded } from "@/components/Bounded";
 import Button from "@/components/Button";
 import { TextSplitter } from "@/components/TextSplitter";
@@ -13,9 +15,8 @@ import Scene from "./Scene";
 import { Bubbles } from "./Bubbles";
 import { useStore } from "@/hooks/useStore";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 /**
  * Props for `Hero`.
@@ -33,33 +34,34 @@ const Hero = ({ slice }: HeroProps): JSX.Element => {
     () => {
       if (!ready && isDesktop) return;
 
-      const introTimeline = gsap.timeline();
+      const introTl = gsap.timeline();
 
-      introTimeline.set(".hero", { opacity: 1 });
-      introTimeline.from(".hero-header-word", {
-        scale: 3,
-        opacity: 0,
-        ease: "power4.in",
-        delay: 0.3,
-        stagger: 1,
-      });
-      introTimeline.from(
-        ".hero-subheading",
-        {
-          y: 30,
+      introTl
+        .set(".hero", { opacity: 1 })
+        .from(".hero-header-word", {
+          scale: 3,
           opacity: 0,
-        },
-        "+=.8",
-      );
-      introTimeline.from(".hero-body", {
-        y: 0,
-        opacity: 0,
-      });
-      introTimeline.from(".hero-button", {
-        y: 0,
-        opacity: 0,
-        duration: 0.6,
-      });
+          ease: "power4.in",
+          delay: 0.3,
+          stagger: 1,
+        })
+        .from(
+          ".hero-subheading",
+          {
+            opacity: 0,
+            y: 30,
+          },
+          "+=.8",
+        )
+        .from(".hero-body", {
+          opacity: 0,
+          y: 10,
+        })
+        .from(".hero-button", {
+          opacity: 0,
+          y: 10,
+          duration: 0.6,
+        });
 
       const scrollTl = gsap.timeline({
         scrollTrigger: {
@@ -73,22 +75,21 @@ const Hero = ({ slice }: HeroProps): JSX.Element => {
       scrollTl
         .fromTo(
           "body",
-          {
+           {
             backgroundColor: "#fde047", // Start color
           },
-          {
-            backgroundColor: "#a7ea29", // End color
+           {             backgroundColor: "#a7ea29", // End color,
             overwrite: "auto",
-          },
+           },
           1,
         )
         .from(".text-side-heading .split-char", {
           scale: 1.3,
           y: 40,
-          opacity: 0,
           rotate: -25,
+          opacity: 0,
           stagger: 0.1,
-          ease: "back.out",
+          ease: "back.out(3)",
           duration: 0.5,
         })
         .from(".text-side-body", {
@@ -106,15 +107,16 @@ const Hero = ({ slice }: HeroProps): JSX.Element => {
       className="hero opacity-0"
     >
       {isDesktop && (
-        <View className="hero-scene pointer-events-none sticky top-0 z-0 -mt-[100vh] hidden h-screen w-screen md:block">
+        <View className="hero-scene pointer-events-none sticky top-0 z-50 -mt-[100vh] hidden h-screen w-screen md:block">
           <Scene />
           <Bubbles count={300} speed={2} repeat={true} />
         </View>
       )}
-      <div className="relative z-10 grid">
-        <div className="relative z-10 grid h-screen place-items-center">
+
+      <div className="grid">
+        <div className="grid h-screen place-items-center">
           <div className="grid auto-rows-min place-items-center text-center">
-            <h1 className="hero-header mt-12 text-7xl font-black uppercase leading-[.8] text-teal-600 md:text-[9rem] lg:text-[12rem]">
+            <h1 className="hero-header text-7xl font-black uppercase leading-[.8] text-teal-600 md:text-[9rem] lg:text-[13rem]">
               <TextSplitter
                 text={asText(slice.primary.heading)}
                 wordDisplayStyle="block"
@@ -130,7 +132,7 @@ const Hero = ({ slice }: HeroProps): JSX.Element => {
             <Button
               buttonLink={slice.primary.button_link}
               buttonText={slice.primary.button_text}
-              className="hero-button relative z-50 mt-12 cursor-pointer"
+              className="hero-button mt-12"
             />
           </div>
         </div>

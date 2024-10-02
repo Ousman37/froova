@@ -1,6 +1,6 @@
 "use client";
 
-import { Environment } from "@react-three/drei";
+import { Environment, Scroll } from "@react-three/drei";
 import { useRef } from "react";
 import { Group } from "three";
 import gsap from "gsap";
@@ -10,7 +10,6 @@ import { useGSAP } from "@gsap/react";
 import FloatingCan from "@/components/FloatingCan";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
-// Registering GSAP ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 type Props = {};
@@ -19,65 +18,54 @@ export default function Scene({}: Props) {
   const canRef = useRef<Group>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)", true);
 
-  // Define the background colors for each section
   const bgColors = ["#FFA6B5", "#E9CFF6", "#CBEF9A"];
 
-  useGSAP(() => {
-    if (!canRef.current) return;
-
-    const sections = gsap.utils.toArray(".alternating-section");
-
-    const scrollTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".alternating-text-view",
-        endTrigger: ".alternating-text-container",
-        pin: true,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true,
-      },
-    });
-
-    sections.forEach((_, index) => {
+  useGSAP(
+    () => {
       if (!canRef.current) return;
-      if (index === 0) return;
 
-      const isOdd = index % 2 !== 0;
+      const sections = gsap.utils.toArray(".alternating-section");
 
-      // Update can position and rotation based on scroll
-      const xPosition = isDesktop ? (isOdd ? "-1" : "1") : 0;
-      const yRotation = isDesktop ? (isOdd ? ".4" : "-.4") : 0;
+      const scrollTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".alternating-text-view",
+          endTrigger: ".alternating-text-container",
+          pin: true,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+        },
+      });
 
-      scrollTl
-        .to(
-          canRef.current.position,
-          {
+      sections.forEach((_, index) => {
+        if (!canRef.current) return;
+        if (index === 0) return;
+
+        const isOdd = index % 2 !== 0;
+
+        const xPosition = isDesktop ? (isOdd ? "-1" : "1") : 0;
+        const yRotation = isDesktop ? (isOdd ? ".4" : "-.4") : 0;
+        scrollTl
+          .to(canRef.current.position, {
             x: xPosition,
             ease: "circ.inOut",
             delay: 0.5,
-          },
-          0,
-        )
-        .to(
-          canRef.current.rotation,
-          {
-            y: yRotation,
-            ease: "back.inOut",
-          },
-          "<",
-        )
-        // Change the background color as the user scrolls
-        .to(
-          ".alternating-text-container",
-          {
-            backgroundColor: bgColors[index % bgColors.length],
-            ease: "none",
-            duration: 1,
-          },
-          "<",
-        );
-    });
-  }, [isDesktop]);
+          })
+          .to(
+            canRef.current.rotation,
+            {
+              y: yRotation,
+              ease: "back.inOut",
+            },
+            "<",
+          )
+          .to(".alternating-text-container", {
+            backgroundColor: gsap.utils.wrap(bgColors, index),
+          });
+      });
+    },
+    { dependencies: [isDesktop] },
+  );
 
   return (
     <group
@@ -90,3 +78,4 @@ export default function Scene({}: Props) {
     </group>
   );
 }
+
